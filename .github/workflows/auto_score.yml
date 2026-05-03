@@ -20,11 +20,18 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
+    
+        success=0
         for i in 1 2 3; do
-          pip install --no-cache-dir -i https://pypi.org/simple -r requirements.txt && break
+          pip install --no-cache-dir -i https://pypi.org/simple -r requirements.txt && success=1 && break
           echo "Retry $i..."
           sleep 5
         done
+    
+        if [ $success -ne 1 ]; then
+          echo "❌ pip install failed after retries"
+          exit 1
+        fi
 
     - name: Run script
       env:
